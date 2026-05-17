@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Rival Visual Downloader</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #030f06;
+            color: #ffffff;
+            user-select: none;
+            cursor: none !important;
+        }
+
+        /* Arka Plan */
+        .bg-gradient {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #030f06;
+            background: linear-gradient(135deg, #030f06 0%, #07240e 100%);
+            z-index: 1;
+            transition: background 0.5s ease;
+        }
+        
+        .light-ray {
+            position: absolute;
+            top: -150px; right: -150px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(180, 255, 200, 0.15) 0%, rgba(0,0,0,0) 70%);
+            z-index: 2;
+            pointer-events: none;
+            transition: background 0.5s ease;
+        }
+
+        /* Temalar */
+        .theme-blue .bg-gradient { background: linear-gradient(135deg, #030d1a 0%, #0a1c33 100%); }
+        .theme-blue .light-ray { background: radial-gradient(circle, rgba(180, 220, 255, 0.15) 0%, rgba(0,0,0,0) 70%); }
+        .theme-blue .main-title { background: linear-gradient(135deg, #3498db, #aed6f1); -webkit-background-clip: text; color: #3498db; }
+        .theme-blue .dl-btn { background: #3498db; }
+
+        .theme-red .bg-gradient { background: linear-gradient(135deg, #120303 0%, #330a0a 100%); }
+        .theme-red .light-ray { background: radial-gradient(circle, rgba(255, 180, 180, 0.15) 0%, rgba(0,0,0,0) 70%); }
+        .theme-red .main-title { background: linear-gradient(135deg, #e74c3c, #f5b7b1); -webkit-background-clip: text; color: #e74c3c; }
+        .theme-red .dl-btn { background: #e74c3c; }
+
+        .theme-purple .bg-gradient { background: linear-gradient(135deg, #0b0314 0%, #220a33 100%); }
+        .theme-purple .light-ray { background: radial-gradient(circle, rgba(220, 180, 255, 0.15) 0%, rgba(0,0,0,0) 70%); }
+        .theme-purple .main-title { background: linear-gradient(135deg, #9b59b6, #d7bde2); -webkit-background-clip: text; color: #9b59b6; }
+        .theme-purple .dl-btn { background: #9b59b6; }
+
+        .theme-pink .bg-gradient { background: linear-gradient(135deg, #14030d 0%, #330a21 100%); }
+        .theme-pink .light-ray { background: radial-gradient(circle, rgba(255, 180, 220, 0.15) 0%, rgba(0,0,0,0) 70%); }
+        .theme-pink .main-title { background: linear-gradient(135deg, #e84393, #f9a8d4); -webkit-background-clip: text; color: #e84393; }
+        .theme-pink .dl-btn { background: #e84393; }
+
+        .theme-grey .bg-gradient { background: linear-gradient(135deg, #121212 0%, #2d2d2d 100%); }
+        .theme-grey .light-ray { background: radial-gradient(circle, rgba(230, 230, 230, 0.1) 0%, rgba(0,0,0,0) 70%); }
+        .theme-grey .main-title { background: linear-gradient(135deg, #b2bec3, #dfe6e9); -webkit-background-clip: text; color: #b2bec3; }
+        .theme-grey .dl-btn { background: #b2bec3; }
+
+        .theme-bw .bg-gradient { background: linear-gradient(135deg, #020202 0%, #111111 100%); }
+        .theme-bw .light-ray { background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0,0,0,0) 70%); }
+        .theme-bw .main-title { background: linear-gradient(135deg, #ffffff, #666666); -webkit-background-clip: text; color: #ffffff; }
+        .theme-bw .dl-btn { background: #ffffff; color: #000 !important; }
+
+        /* Arayüz Ana Düzen */
+        .wrapper {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 10;
+        }
+
+        .app-window { width: 860px; display: flex; flex-direction: column; position: relative; }
+
+        /* Kontroller */
+        .controls-row { position: absolute; top: -20px; left: 0; right: 0; display: flex; gap: 10px; z-index: 100; }
+        .dropdown-container { position: relative; }
+        
+        .control-btn, .dropdown-option, .dl-btn, .social-link { cursor: none !important; }
+
+        .control-btn {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #ccc;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .control-btn:hover { color: #fff; border-color: rgba(255, 255, 255, 0.3); background: rgba(255,255,255,0.05); }
+        
+        /* Dropdown Animasyonu */
+        .dropdown-menu {
+            display: block; position: absolute; top: 38px; left: 0;
+            background: #0a0a0a; border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px; padding: 6px; width: 160px; z-index: 500;
+            opacity: 0; transform: scaleY(0); transform-origin: top;
+            visibility: hidden;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.15s ease, visibility 0.15s;
+        }
+        .dropdown-menu.active {
+            opacity: 1; transform: scaleY(1); visibility: visible;
+        }
+        
+        .dropdown-option { 
+            padding: 8px 12px; font-size: 12px; font-weight: 500; border-radius: 6px; margin-bottom: 2px; color: #bbb;
+            transition: all 0.12s ease;
+        }
+        .dropdown-option:hover { background: rgba(255,255,255,0.1); color: #fff; transform: translateX(4px); }
+
+        /* Başlık Alanı */
+        .header-container { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 30px; margin-top: 35px; }
+        .main-title {
+            font-size: 46px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px;
+            background: linear-gradient(135deg, #2ecc71, #a3e4d7); -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent; color: #2ecc71;
+            transition: all 0.5s ease;
+        }
+        .info-badge { text-align: right; font-size: 12px; padding: 10px 0; color: rgba(255, 255, 255, 0.7); }
+
+        /* Sürüm Kartları Düzeni */
+        .download-section { margin-bottom: 40px; }
+        .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 16px; opacity: 0.5; font-weight: 700; }
+        .version-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        
+        /* Premium Kart Animasyonu */
+        .version-card {
+            background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 14px; padding: 22px; display: flex; justify-content: space-between; align-items: center;
+            transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.25s ease, border-color 0.25s ease;
+        }
+        .version-card:hover { 
+            background: rgba(255, 255, 255, 0.07); 
+            border-color: rgba(255,255,255,0.25);
+            transform: translateY(-3px);
+        }
+        .version-info h3 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+        .version-info p { font-size: 12px; opacity: 0.5; }
+        
+        /* İndirme Butonu */
+        .dl-btn {
+            background: #2ecc71; color: #030f06;
+            font-weight: 700; padding: 10px 22px; border-radius: 8px; text-decoration: none; font-size: 13px; border: none;
+            display: inline-block; text-align: center; outline: none;
+            transition: transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.15s ease;
+        }
+        .dl-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.25);
+        }
+        .dl-btn:active { transform: scale(0.97); }
+
+        /* Alt Linkler */
+        .footer-links { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.07); padding-top: 24px; }
+        .social-group { display: flex; gap: 12px; }
+        .social-link {
+            color: #aaa; text-decoration: none; font-size: 13px; background: rgba(255,255,255,0.03);
+            padding: 9px 18px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.05);
+            outline: none; transition: all 0.15s ease;
+        }
+        .social-link:hover { background: #fff; color: #000; transform: translateY(-2px); }
+
+        /* Ring İmleç */
+        #custom-glow-cursor {
+            width: 14px; height: 14px;
+            background: transparent;
+            border: 2px solid #2ecc71;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 100000;
+            transform: translate(-50%, -50%);
+            transition: width 0.15s ease, height 0.15s ease, background-color 0.15s ease, border-color 0.2s ease;
+        }
+
+        #custom-glow-cursor.hovered {
+            width: 34px;
+            height: 34px;
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        /* Neon Kuyruk */
+        .trail-dot {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+    </style>
+</head>
+<body id="mainBody">
+
+    <div class="bg-gradient"></div>
+    <div class="light-ray"></div>
+
+    <div class="wrapper">
+        <div class="app-window">
+            
+            <!-- Üst Menü -->
+            <div class="controls-row">
+                <div class="dropdown-container">
+                    <button class="control-btn interactive" id="btnThemeToggle" onclick="toggleMenu('themeMenu')">Tema Degistir</button>
+                    <div class="dropdown-menu" id="themeMenu">
+                        <div class="dropdown-option interactive" onclick="setTheme('default', '#2ecc71')">Yesil</div>
+                        <div class="dropdown-option interactive" onclick="setTheme('theme-blue', '#3498db')">Mavi</div>
+                        <div class="dropdown-option interactive" onclick="setTheme('theme-red', '#e74c3c')">Kirmizi</div>
+                        <div class="dropdown-option interactive" onclick="setTheme('theme-purple', '#9b59b6')">Mor</div>
+                        <div class="dropdown-option interactive" onclick="setTheme('theme-pink', '#e84393')">Pembe</div>
+                        <div class="dropdown-option interactive" onclick="setTheme('theme-grey', '#b2bec3')">Gri</div>
+                        <div class="dropdown-option interactive" onclick="setTheme('theme-bw', '#ffffff')">Siyah-Beyaz</div>
+                    </div>
+                </div>
+
+                <div class="dropdown-container">
+                    <button class="control-btn interactive" id="btnLangToggle" onclick="toggleMenu('langMenu')">Dil / Language</button>
+                    <div class="dropdown-menu" id="langMenu">
+                        <div class="dropdown-option interactive" onclick="setLanguage('tr')">Turkce</div>
+                        <div class="dropdown-option interactive" onclick="setLanguage('en')">English</div>
+                        <div class="dropdown-option interactive" onclick="setLanguage('az')">Azarbaycan</div>
+                        <div class="dropdown-option interactive" onclick="setLanguage('uk')">Ukrainska</div>
+                        <div class="dropdown-option interactive" onclick="setLanguage('ru')">Russkiy</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Başlık -->
+            <div class="header-container">
+                <div>
+                    <h1 class="main-title" id="txtMainTitle">Download Rival Visual</h1>
+                </div>
+                <div class="info-badge">
+                    made by <span style="color:#2ecc71; font-weight:bold; transition: color 0.4s;" id="badgeAuthor">GhostyKanun</span><br>
+                    version v0.1 beta
+                </div>
+            </div>
+
+            <!-- Kartlar -->
+            <div class="download-section">
+                <h2 class="section-title" id="txtChooseVersion">Choose a Version</h2>
+                
+                <div class="version-grid">
+                    <!-- 26.1.1 Butonu -->
+                    <div class="version-card interactive">
+                        <div class="version-info">
+                            <h3>Rival Visual 26.1.1</h3>
+                            <p id="txtVer1">Version: 1.4</p>
+                        </div>
+                        <a href="https://rival-dl-tracker.rival-dl.workers.dev/dl?uid=8196755224&ver=26.1.1%2F1.4&url=https%3A%2F%2Fcdn.modrinth.com%2Fdata%2FQbFHT75I%2Fversions%2FGnQbXZzX%2FRivalVisual-1.4-26.1.X.jar&sig=e2a3fd66279c2b392fd9cd0fd09b5e7a6bd7c437ad79f3a638a49e318a807113" target="_blank" class="dl-btn btn-dl-text interactive">INDIR</a>
+                    </div>
+
+                    <!-- 26.1 Butonu -->
+                    <div class="version-card interactive">
+                        <div class="version-info">
+                            <h3>Rival Visual 26.1</h3>
+                            <p id="txtVer2">Version: 1.4</p>
+                        </div>
+                        <a href="https://rival-dl-tracker.rival-dl.workers.dev/dl?uid=8196755224&ver=26.1%2F1.4&url=https%3A%2F%2Fcdn.modrinth.com%2Fdata%2FQbFHT75I%2Fversions%2FGnQbXZzX%2FRivalVisual-1.4-26.1.X.jar&sig=e3394174f8f6907f4c6575579db887dc5f98b43eb0e73d0e3435d014469040a9" target="_blank" class="dl-btn btn-dl-text interactive">INDIR</a>
+                    </div>
+
+                    <!-- 1.21.11 Butonu -->
+                    <div class="version-card interactive">
+                        <div class="version-info">
+                            <h3>Rival Visual 1.21.11</h3>
+                            <p id="txtVer3">Version: 1.4</p>
+                        </div>
+                        <a href="https://rival-dl-tracker.rival-dl.workers.dev/dl?uid=8196755224&ver=1.21.11%2F1.4&url=https%3A%2F%2Fcdn.modrinth.com%2Fdata%2FQbFHT75I%2Fversions%2FNTJoSQ43%2FRivalVisual-1.4-1.21.11.jar&sig=a29bbd12d550899f9c59b1ba610640572e2483869f68b46052cb842a32f03e8e" target="_blank" class="dl-btn btn-dl-text interactive">INDIR</a>
+                    </div>
+
+                    <!-- 1.21.4 Butonu -->
+                    <div class="version-card interactive">
+                        <div class="version-info">
+                            <h3>Rival Visual 1.21.4</h3>
+                            <p id="txtVer4">Version: 1.5.2</p>
+                        </div>
+                        <a href="https://rival-dl-tracker.rival-dl.workers.dev/dl?uid=8196755224&ver=1.21.4%2F1.5.2&url=https%3A%2F%2Fcdn.modrinth.com%2Fdata%2FQbFHT75I%2Fversions%2Ff1C9YWgf%2FRivalVisual-1.5.2-1.21.4.jar&sig=d834842645661e980c14156b6a3dc13b8e31708f58b3b895da1645d83bc66a1a" target="_blank" class="dl-btn btn-dl-text interactive">INDIR</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer-links">
+                <div class="social-group">
+                    <a href="https://discord.gg/FZPe5bxb" target="_blank" class="social-link interactive">Rival Discord</a>
+                    <a href="https://t.me/rivalvisuals" target="_blank" class="social-link interactive">Rival Telegram</a>
+                </div>
+                <a href="https://discord.gg/AgNGm7aGT" target="_blank" class="social-link interactive">GhostyKanun Discord</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="custom-glow-cursor"></div>
+
+    <script>
+        window.onerror = function() { return true; };
+
+        var currentThemeColor = '#2ecc71';
+        var cursor = document.getElementById('custom-glow-cursor');
+
+        var langData = {
+            tr: { mainTitle: "Rival Visual Indir", chooseVersion: "Bir Surum Secin", versionLabel: "Versiyon", downloadBtn: "INDIR", themeToggle: "Tema Degistir", langToggle: "Dil Degistir" },
+            en: { mainTitle: "Download Rival Visual", chooseVersion: "Choose a Version", versionLabel: "Version", downloadBtn: "DOWNLOAD", themeToggle: "Change Theme", langToggle: "Change Language" },
+            az: { mainTitle: "Rival Visual Yukla", chooseVersion: "Versiya Secin", versionLabel: "Versiya", downloadBtn: "YUKLA", themeToggle: "Temani Degis", langToggle: "Dili Degis" },
+            uk: { mainTitle: "Zavantajiti Rival Visual", chooseVersion: "Oberit versiyu", versionLabel: "Versiya", downloadBtn: "ZAVANTAJITI", themeToggle: "Zminiti temu", langToggle: "Zminiti movu" },
+            ru: { mainTitle: "Skachat Rival Visual", chooseVersion: "Выберите версию", versionLabel: "Версия", downloadBtn: "СКАЧАТЬ", themeToggle: "Сменить тему", langToggle: "Сменить язык" }
+        };
+
+        function setLanguage(langCode) {
+            var data = langData[langCode];
+            document.getElementById('txtMainTitle').innerHTML = data.mainTitle;
+            document.getElementById('txtChooseVersion').innerHTML = data.chooseVersion;
+            document.getElementById('btnThemeToggle').innerHTML = data.themeToggle;
+            document.getElementById('btnLangToggle').innerHTML = data.langToggle;
+            document.getElementById('txtVer1').innerHTML = data.versionLabel + ": 1.4";
+            document.getElementById('txtVer2').innerHTML = data.versionLabel + ": 1.4";
+            document.getElementById('txtVer3').innerHTML = data.versionLabel + ": 1.4";
+            document.getElementById('txtVer4').innerHTML = data.versionLabel + ": 1.5.2";
+            var btns = document.querySelectorAll('.btn-dl-text');
+            for(var i=0; i<btns.length; i++) btns[i].innerHTML = data.downloadBtn;
+            closeAllMenus();
+        }
+
+        function toggleMenu(id) {
+            var menu = document.getElementById(id);
+            var otherId = (id === 'themeMenu') ? 'langMenu' : 'themeMenu';
+            document.getElementById(otherId).className = 'dropdown-menu';
+            
+            if (menu.className.indexOf('active') !== -1) {
+                menu.className = 'dropdown-menu';
+            } else {
+                menu.className = 'dropdown-menu active';
+            }
+        }
+
+        function closeAllMenus() {
+            document.getElementById('themeMenu').className = 'dropdown-menu';
+            document.getElementById('langMenu').className = 'dropdown-menu';
+        }
+
+        function setTheme(themeClass, hexColor) {
+            document.getElementById('mainBody').className = themeClass;
+            currentThemeColor = hexColor;
+            cursor.style.borderColor = hexColor;
+            document.getElementById('badgeAuthor').style.color = hexColor;
+            
+            var dlButtons = document.querySelectorAll('.dl-btn');
+            for(var i=0; i<dlButtons.length; i++) {
+                dlButtons[i].style.backgroundColor = hexColor;
+                if(themeClass === 'theme-bw') {
+                    dlButtons[i].style.color = '#000';
+                } else {
+                    dlButtons[i].style.color = '#030f06';
+                }
+            }
+            closeAllMenus();
+        }
+
+        var lastTime = 0;
+
+        document.onmousemove = function(e) {
+            var event = e || window.event;
+            var x = event.clientX;
+            var y = event.clientY;
+            
+            cursor.style.left = x + 'px';
+            cursor.style.top = y + 'px';
+
+            var now = new Date().getTime();
+            if (now - lastTime > 15) { 
+                createTrailDot(x, y);
+                lastTime = now;
+            }
+        };
+
+        function createTrailDot(x, y) {
+            var dot = document.createElement('div');
+            dot.className = 'trail-dot';
+            dot.style.left = x + 'px';
+            dot.style.top = y + 'px';
+            dot.style.backgroundColor = currentThemeColor;
+            
+            if (currentThemeColor !== '#ffffff') {
+                dot.style.boxShadow = '0 0 8px ' + currentThemeColor;
+            }
+
+            document.body.appendChild(dot);
+
+            setTimeout(function() {
+                dot.style.opacity = '0';
+                dot.style.transform = 'translate(-50%, -50%) scale(0.1)';
+            }, 10);
+
+            setTimeout(function() {
+                if (dot && dot.parentNode) {
+                    dot.parentNode.removeChild(dot);
+                }
+            }, 400);
+        }
+
+        function setupHoverEvents() {
+            var targets = document.querySelectorAll('.interactive');
+            for (var i = 0; i < targets.length; i++) {
+                targets[i].onmouseenter = function() { 
+                    cursor.className = 'hovered'; 
+                    cursor.style.backgroundColor = currentThemeColor + '1A'; 
+                };
+                targets[i].onmouseleave = function() { 
+                    cursor.className = ''; 
+                    cursor.style.backgroundColor = 'transparent';
+                };
+            }
+        }
+        setInterval(setupHoverEvents, 300);
+
+        document.onclick = function(e) {
+            var event = e || window.event;
+            var target = event.target || event.srcElement;
+            if (target && target.className.indexOf('control-btn') === -1) {
+                closeAllMenus();
+            }
+        };
+
+        setLanguage('tr');
+    </script>
+</body>
+</html>
