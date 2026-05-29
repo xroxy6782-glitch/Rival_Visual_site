@@ -30,10 +30,12 @@ a:hover{text-decoration:underline}
 .post{background:#F0E0D6;border:1px solid #800000;padding:6px 8px;display:inline-block;min-width:180px;max-width:700px;word-break:break-word}
 .post-header{font-size:8pt;margin-bottom:4px;color:#800000;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .post-header .uid{color:#117743;font-weight:bold}
-.post-header .postno{color:#800000}
+.post-header .postno{color:#800000;cursor:pointer;text-decoration:underline}
+.post-header .postno:hover{color:#d00000}
 .post-header .time{color:#666}
 .post-body{font-size:10pt;white-space:pre-wrap}
 .post-body .greentext{color:#789922}
+.post-body .quotelink{color:#d04000;text-decoration:underline;cursor:pointer;font-weight:bold}
 .admin-tag{background:#800000;color:#FFD700;font-size:7pt;padding:1px 4px}
 #bottom-panel{position:fixed;bottom:0;left:0;width:100%;background:#F0E0D6;border-top:2px solid #800000;padding:8px 12px;display:none;flex-direction:column;align-items:center;z-index:100}
 #info-bar{width:100%;background:#000;color:#00FF00;text-align:center;font-size:8pt;padding:2px;font-family:monospace;margin-bottom:5px}
@@ -49,10 +51,6 @@ a:hover{text-decoration:underline}
 .btn-sm:hover{background:#333}
 .btn-green{background:#006600;color:#fff;border:none;padding:3px 7px;cursor:pointer;font-size:8pt;font-family:monospace}
 #uid-bar{font-size:8pt;color:#600;margin-top:2px;text-align:center}
-#ban-screen{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#FF0000;z-index:99999;flex-direction:column;justify-content:center;align-items:center;font-family:monospace;text-align:center}
-#ban-screen h1{animation:blink 1s infinite}
-#mute-banner{display:none;background:#330000;color:#ff8888;padding:3px;text-align:center;font-size:9pt;border-bottom:1px solid red}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
 #welcome-page{text-align:center;padding:30px 15px}
 #welcome-page h1{font-size:22pt;border-bottom:2px solid #800000;display:inline-block;padding-bottom:5px;margin-bottom:12px}
 .enter-btn{background:#800000;color:#FFFFEE;border:2px solid #600000;padding:10px 28px;font-size:12pt;cursor:pointer;font-family:"Trebuchet MS",monospace;margin-top:15px}
@@ -63,29 +61,12 @@ a:hover{text-decoration:underline}
 .home-cat h3{font-size:9pt;border-bottom:1px solid #800000;padding-bottom:3px;margin-bottom:5px;color:#800000}
 .home-cat a{display:block;font-size:9pt;padding:1px 0;color:#0000EE}
 .home-cat a:hover{text-decoration:underline}
-.poll-form{background:#e4d0c4;padding:10px;border:1px dashed #800000;margin-bottom:12px}
-.poll-form input{border:1px solid #800000;background:#FFFFEE;padding:3px;font-family:monospace}
-.poll-item{background:#F0E0D6;border:1px solid #800000;padding:6px;margin:4px 0}
-.vote-bar{background:#800000;height:8px;margin:4px 0;transition:width 0.3s}
 #lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;justify-content:center;align-items:center;flex-direction:column}
 #lightbox img,#lightbox video{max-width:90vw;max-height:85vh;border:2px solid #800000}
 #lightbox-close{position:absolute;top:10px;right:18px;color:#fff;font-size:22pt;cursor:pointer;font-family:monospace}
-#lightbox audio{width:400px;margin-top:10px}
 </style>
 </head>
 <body>
-
-<div id="ban-screen">
-  <h1>&#9608;&#9608; FATAL ERROR: IP BANNED &#9608;&#9608;</h1><br>
-  <table style="border:1px solid #f00;padding:20px;background:#111">
-    <tr><td style="color:#888">SEBEP</td><td id="bs-r" style="color:#f44;padding-left:20px"></td></tr>
-    <tr><td style="color:#888">SÜRE</td><td id="bs-d" style="color:#f44;padding-left:20px"></td></tr>
-    <tr><td style="color:#888">TARİH</td><td id="bs-dt" style="color:#f44;padding-left:20px"></td></tr>
-    <tr><td style="color:#888">BAN-UID</td><td id="bs-u" style="color:#555;padding-left:20px;font-size:8pt"></td></tr>
-  </table>
-</div>
-
-<div id="mute-banner">&#128277; Susturuldunuz — Sebep: <span id="mute-r"></span></div>
 
 <div id="top-bar">
   <span>&#9632; A38T :: Anarchy38Time &#9632;</span>
@@ -96,7 +77,6 @@ a:hover{text-decoration:underline}
   <span id="lightbox-close" onclick="closeLB()">&#10005;</span>
   <img id="lb-img" src="" style="display:none" onclick="event.stopPropagation()">
   <video id="lb-vid" controls style="display:none" onclick="event.stopPropagation()"></video>
-  <audio id="lb-aud" controls style="display:none" onclick="event.stopPropagation()"></audio>
 </div>
 
 <div id="wrapper">
@@ -116,45 +96,29 @@ a:hover{text-decoration:underline}
           <ol style="margin-left:15px;margin-top:5px">
             <li>Kişisel bilgi paylaşma.</li>
             <li>Spam ve flood yasaktır.</li>
-            <li>Kanalların konusuna uy.</li>
-            <li>Yasadışı içerik kesinlikle yasaktır.</li>
           </ol>
         </div>
         <br>
-        <button class="enter-btn" onclick="enterSite()">[ KURALLARI KABUL EDİYORUM - GİRİŞ ]</button>
+        <button class="enter-btn" onclick="enterSite()">[ GİRİŞ YAP ]</button>
         <br><br>
         <div class="home-boards" id="home-board-list"></div>
       </div>
     </div>
 
     <div id="dynamic-pages"></div>
-
-    <div id="oy-board" class="page">
-      <div class="board-header"><div><h1>/oy/ - Kanal Oylaması</h1><p>Yeni kanallar için oylama açın</p></div></div>
-      <div class="poll-form">
-        <b>Yeni Oylama:</b><br><br>
-        <label style="font-size:9pt">Kanal İsmi: <input type="text" id="p-name" placeholder="Örn: Müzik" style="width:160px"></label>
-        <label style="font-size:9pt">Kategori: <input type="text" id="p-cat" placeholder="Örn: Eğlence" style="width:140px"></label>
-        <label style="font-size:9pt">Uzantı: <input type="text" id="p-ext" placeholder="Örn: /music/" style="width:100px"></label>
-        <button class="btn" onclick="createPoll()" style="margin-top:6px">[ OYLAMA AÇ ]</button>
-      </div>
-      <div id="poll-list"></div>
-    </div>
-
   </div>
 </div>
 
 <div id="bottom-panel" data-active-board="" data-media="0">
   <div id="info-bar">Sistem Aktif</div>
   <div id="post-form">
-    <textarea id="post-input" placeholder=">Mesajınızı yazın... (> ile greentext)"></textarea>
+    <textarea id="post-input" placeholder=">Mesajınızı yazın... (Alıntı için posta tıklayın)"></textarea>
     <div class="form-side">
       <button class="btn" onclick="sendPost()">[ GÖNDER ]</button>
       <button class="btn-sm" id="media-btn" onclick="document.getElementById('media-input').click()" style="display:none">&#128247; Medya Ekle</button>
       <input type="file" id="media-input" accept="image/*,video/mp4,audio/mp3,audio/mpeg,image/gif" onchange="previewMedia(this)">
       <button class="btn-sm" onclick="clearPost()">Temizle</button>
       <img id="media-preview" src="">
-      <audio id="audio-preview" controls></audio>
       <span id="media-name" style="font-size:7pt;color:#800000;max-width:120px;word-break:break-all"></span>
     </div>
   </div>
@@ -164,87 +128,29 @@ a:hover{text-decoration:underline}
 <script>
 (function(){
 var _s=localStorage;
-var _k={uid:'a38t_uid',ban:'a38t_ban',banR:'a38t_ban_r',banD:'a38t_ban_d',banDt:'a38t_ban_dt',banUid:'a38t_ban_uid',mute:'a38t_mute',muteR:'a38t_mute_r',entered:'a38t_entered'};
+var _k={uid:'a38t_uid',entered:'a38t_entered'};
+var _lastPostsData = {}; // Canlı yenilemede ekran titremesini önlemek için veri tutucu
 
-// UID Oluşturma
+// UID
 if(!_s.getItem(_k.uid)) _s.setItem(_k.uid,'Anon'+(Math.floor(Math.random()*900)+100));
 var UID=_s.getItem(_k.uid);
 document.getElementById('top-uid').innerText=UID;
 document.getElementById('uid-bar').innerText='Sizin UID: '+UID;
 
-// TÜM KANALLARIN TANIMLARI
+// KANALLAR
 var BOARDS={
   "A38T Özel":[
     {id:"gen",name:"Genel Sohbet",media:true},
-    {id:"tr",name:"Türkiye",media:true},
-    {id:"tek",name:"Teknoloji",media:true},
-    {id:"muz",name:"Müzik",media:true},
     {id:"oyun",name:"Oyunlar",media:true},
-    {id:"film",name:"Film & Dizi",media:true},
-    {id:"help",name:"Yardım",media:false}
-  ],
-  "Japon Kültürü":[
-    {id:"a",name:"Anime & Manga",media:true},
-    {id:"c",name:"Anime / Sevimli",media:true},
-    {id:"w",name:"Anime Duvar Kağıtları",media:true},
-    {id:"m",name:"Mecha",media:true},
-    {id:"cgl",name:"Cosplay & Lolita",media:true},
-    {id:"cm",name:"Sevimli / Erkek",media:true},
-    {id:"jp",name:"Otaku Kültürü",media:false}
-  ],
-  "Video Oyunları":[
-    {id:"v",name:"Video Oyunları",media:false},
-    {id:"vg",name:"Oyun Genel",media:false},
-    {id:"vr",name:"Retro Oyunlar",media:true},
-    {id:"vrpg",name:"RPG",media:false},
-    {id:"vst",name:"Strateji",media:false},
-    {id:"vm",name:"Çok Oyunculu",media:false},
-    {id:"vmg",name:"Mobil Oyunlar",media:true}
+    {id:"film",name:"Film & Dizi",media:true}
   ],
   "İlgi Alanları":[
-    {id:"co",name:"Çizgi Roman & Karikatür",media:true},
-    {id:"g",name:"Teknoloji / Genel",media:false},
-    {id:"tv",name:"Dizi & Film",media:true},
-    {id:"k",name:"Silahlar",media:true},
+    {id:"muz",name:"Müzik",media:true},
     {id:"oto",name:"Araba & Motor",media:true},
-    {id:"an",name:"Hayvanlar & Doğa",media:true},
-    {id:"tg",name:"Masa Oyunları",media:true},
-    {id:"sp",name:"Spor",media:false},
-    {id:"xs",name:"Ekstrem Sporlar",media:true}
-  ],
-  "Yaratıcı":[
-    {id:"ic",name:"Sanat / Eleştiri",media:true},
-    {id:"wg",name:"Duvar Kağıtları",media:true},
-    {id:"lit",name:"Edebiyat",media:false},
-    {id:"mu",name:"Müzik",media:true},
-    {id:"fa",name:"Moda",media:true},
-    {id:"gd",name:"Grafik Tasarım",media:true},
-    {id:"diy",name:"Kendin Yap",media:true},
-    {id:"ck",name:"Yemek & Pişirme",media:true},
-    {id:"po",name:"Kağıt & Origami",media:true},
-    {id:"wsg",name:"Worksafe GIF",media:true}
-  ],
-  "Bilim & Diğer":[
-    {id:"sci",name:"Bilim & Matematik",media:false},
-    {id:"his",name:"Tarih & İnsanlık",media:false},
-    {id:"int",name:"Uluslararası",media:false},
-    {id:"out",name:"Doğa & Kamp",media:true},
-    {id:"toy",name:"Oyuncaklar",media:true},
-    {id:"biz",name:"İş & Finans",media:false},
-    {id:"trv",name:"Seyahat",media:true},
-    {id:"fit",name:"Spor & Fitness",media:true},
-    {id:"mlp",name:"My Little Pony",media:true}
-  ],
-  "Genel":[
-    {id:"b",name:"Rastgele",media:true},
-    {id:"pol",name:"Siyaset",media:false},
-    {id:"news",name:"Güncel Haberler",media:false},
-    {id:"wsr",name:"İstek / Request",media:true},
-    {id:"qa",name:"Soru & Cevap",media:false}
+    {id:"tek",name:"Teknoloji",media:true}
   ]
 };
 
-// Sayfaları Dinamik Oluşturma
 var sidebarNav=document.getElementById('sidebar-nav');
 var dynPages=document.getElementById('dynamic-pages');
 var homeBoardList=document.getElementById('home-board-list');
@@ -264,7 +170,6 @@ Object.keys(BOARDS).forEach(function(cat){
     a.innerHTML='/'+b.id+'/ - '+b.name+(b.media?'<span class="tag-media">[M]</span>':'');
     a.onclick=(function(bid){return function(e){e.preventDefault();showPage(bid)}})(b.id);
     sidebarNav.appendChild(a);
-
     homeBlock+='<a href="#" onclick="enterSite();showPage(\''+b.id+'\');return false">/'+b.id+'/ - '+b.name+'</a>';
 
     var page=document.createElement('div');
@@ -272,7 +177,6 @@ Object.keys(BOARDS).forEach(function(cat){
     page.className='page';
     page.innerHTML='<div class="board-header">'
       +'<div><h1>/'+b.id+'/ - '+b.name+'</h1><p>'+cat+'</p></div>'
-      +(b.media?'<span class="media-badge">&#128247; Medya Açık</span>':'<span style="font-size:8pt;color:#800000">Medya Kapalı</span>')
       +'</div><div class="thread" id="thread-'+b.id+'"></div>';
     dynPages.appendChild(page);
   });
@@ -291,8 +195,7 @@ window.enterSite=function(){
 window.showPage=function(bid){
   if(_s.getItem(_k.entered)!=='1'){enterSite();return;}
   document.querySelectorAll('.page').forEach(function(el){el.classList.remove('active-page')});
-  var pageId=bid+'-page';
-  var target=document.getElementById(pageId)||document.getElementById(bid);
+  var target=document.getElementById(bid+'-page')||document.getElementById(bid);
   if(target) target.classList.add('active-page');
   
   document.getElementById('sidebar').style.display='block';
@@ -300,45 +203,36 @@ window.showPage=function(bid){
   document.getElementById('bottom-panel').setAttribute('data-active-board',bid);
 
   var boardInfo=null;
-  if(bid==='oy'){
-      boardInfo={id:'oy',name:'Oylama',media:false};
-      loadPolls();
-  } else {
-    Object.keys(BOARDS).forEach(function(cat){
-      BOARDS[cat].forEach(function(b){if(b.id===bid) boardInfo=b;});
-    });
-    if(boardInfo) loadPosts(bid);
-  }
-
+  Object.keys(BOARDS).forEach(function(cat){
+    BOARDS[cat].forEach(function(b){if(b.id===bid) boardInfo=b;});
+  });
+  
+  if(boardInfo) loadPosts(bid);
+  
   var mediaAllowed=boardInfo&&boardInfo.media;
   document.getElementById('bottom-panel').setAttribute('data-media',mediaAllowed?'1':'0');
   document.getElementById('media-btn').style.display=mediaAllowed?'inline-block':'none';
-  
   clearPost();
-
-  var infoBar = document.getElementById('info-bar');
-  if(boardInfo) {
-    infoBar.innerText='Kanal: /'+bid+'/ - '+boardInfo.name;
-  } else {
-    infoBar.innerText='Sistem Aktif.';
-  }
+  
+  document.getElementById('info-bar').innerText=boardInfo?'Kanal: /'+bid+'/ - '+boardInfo.name:'Sistem Aktif.';
 };
 
-// Güvenli Post Yükleme (Bozuk Veri Tespiti)
+// POST YÜKLEME VE LİVE KONTROL
 window.loadPosts=function(bid){
   var container=document.getElementById('thread-'+bid);
   if(!container) return;
+  
+  var raw = _s.getItem('a38t_posts_'+bid) || '[]';
+  
+  // Eğer veri aynıysa boşuna sayfayı yenileyip titreşim yapma
+  if(_lastPostsData[bid] === raw && container.innerHTML !== '') return;
+  _lastPostsData[bid] = raw; 
+
   var posts = [];
   try {
-      var raw = _s.getItem('a38t_posts_'+bid);
-      if(raw) {
-         posts = JSON.parse(raw);
-         if(!Array.isArray(posts)) { posts = []; _s.removeItem('a38t_posts_'+bid); }
-      }
-  } catch(e) {
-      _s.removeItem('a38t_posts_'+bid); 
-      posts = [];
-  }
+      posts = JSON.parse(raw);
+      if(!Array.isArray(posts)) posts = [];
+  } catch(e) { posts = []; }
 
   if(!posts.length){
       container.innerHTML='<p style="color:#888;font-size:9pt;padding:10px">Henüz mesaj yok. İlk mesajı sen gönder!</p>';
@@ -347,178 +241,19 @@ window.loadPosts=function(bid){
   container.innerHTML=posts.map(renderPost).join('');
 };
 
-function renderPost(p){
-  var body = p.text ? p.text.split('\n').map(function(line){
-    return line.startsWith('>')?'<span class="greentext">'+esc(line)+'</span>':esc(line);
-  }).join('<br>') : '';
-  
-  var mediaHTML='';
-  if(p.media&&p.mediaType){
-    if(p.mediaType.startsWith('image/')){
-      mediaHTML='<div class="post-thumb"><img src="'+p.media+'" onclick="openLB(\'img\',\''+p.media+'\')"></div>';
-    } else if(p.mediaType.startsWith('video/')){
-      mediaHTML='<div class="post-thumb"><video src="'+p.media+'" onclick="openLB(\'vid\',\''+p.media+'\')" style="max-width:150px;max-height:150px;cursor:pointer"></video></div>';
-    } else if(p.mediaType.startsWith('audio/')){
-      mediaHTML='<div class="post-thumb"><div class="audio-icon" onclick="openLB(\'aud\',\''+p.media+'\')">&#127925;</div></div>';
-    }
+// CANLI CHAT (LIVE) İÇİN OTOMATİK YENİLEME
+setInterval(function(){
+  var activeBid = document.getElementById('bottom-panel').getAttribute('data-active-board');
+  if(activeBid && activeBid !== 'welcome' && activeBid !== 'oy') {
+      loadPosts(activeBid);
   }
+}, 3000); // 3 Saniyede bir kontrol eder (Live Chat Simülasyonu)
 
-  return '<div class="post-wrap">'+mediaHTML
-    +'<div class="post">'
-    +'<div class="post-header">'
-    +'<span class="uid">UID: '+esc(p.uid)+'</span>'
-    +'<span class="postno">No.'+p.no+'</span>'
-    +'<span class="time">'+esc(p.time)+'</span>'
-    +'</div>'
-    +'<div class="post-body">'+body+'</div>'
-    +'</div></div>';
-}
-
-function esc(t){
-  if(!t) return '';
-  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// Mesaj Gönderme
-window.sendPost=function(){
-  var text=document.getElementById('post-input').value.trim();
-  var bid=document.getElementById('bottom-panel').getAttribute('data-active-board');
-  var mediaAllowed=document.getElementById('bottom-panel').getAttribute('data-media')==='1';
-  
-  if(!text && !_mediaData) return;
-  if(!bid || bid==='oy') return;
-
-  var posts = [];
-  try {
-      var raw = _s.getItem('a38t_posts_'+bid);
-      if(raw) {
-          posts = JSON.parse(raw);
-          if(!Array.isArray(posts)) posts = [];
-      }
-  } catch(e){ posts = []; }
-  
-  var now=new Date();
-  var t=now.getDate()+'/'+(now.getMonth()+1)+' '+now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
-  var post={uid:UID,no:Math.floor(10000+Math.random()*90000),time:t,text:text};
-  
-  if(mediaAllowed&&_mediaData){post.media=_mediaData;post.mediaType=_mediaType;}
-  posts.push(post);
-  if(posts.length>300) posts=posts.slice(-300);
-  _s.setItem('a38t_posts_'+bid,JSON.stringify(posts));
-  loadPosts(bid);
-  
-  try {
-      var webhookUrl = "https://discord.com/api/webhooks/1509231589798707240/aH-sLMxrmfKmcYNCmBTVNIVHJBEzBkQJjKKzMWR388S-MI7VHarLMgqt3gGAv5yLxYV2";
-      var discordMsg = "**Yeni Mesaj (/" + bid + "/)**\n**Gönderen UID:** " + UID + "\n**Mesaj:** " + text;
-      if(_mediaData) discordMsg += "\n*(Medya Eklendi)*";
-      fetch(webhookUrl, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ content: discordMsg }) }).catch(function(){});
-  } catch(e){}
-
-  clearPost();
-  var c=document.getElementById('thread-'+bid);
-  if(c) c.scrollTop=c.scrollHeight;
+// YANITLAMA (REPLY) FONKSİYONU
+window.quotePost=function(postNo){
+  var input = document.getElementById('post-input');
+  input.value += '>>' + postNo + '\n';
+  input.focus();
 };
 
-// Temizleme ve Medya
-window.clearPost=function(){
-  var pInput = document.getElementById('post-input');
-  if(pInput) pInput.value='';
-  _mediaData=null;_mediaType=null;
-  var pMedia = document.getElementById('media-preview');
-  var aMedia = document.getElementById('audio-preview');
-  var nMedia = document.getElementById('media-name');
-  var mInput = document.getElementById('media-input');
-  if(pMedia) pMedia.style.display='none';
-  if(aMedia) aMedia.style.display='none';
-  if(nMedia) nMedia.innerText='';
-  if(mInput) mInput.value='';
-};
-
-window.previewMedia=function(inp){
-  var file=inp.files[0];
-  if(!file) return;
-  if(file.size>8*1024*1024){alert('Maksimum 8MB!');inp.value='';return;}
-  var reader=new FileReader();
-  reader.onload=function(e){
-    _mediaData=e.target.result; _mediaType=file.type;
-    if(file.type.startsWith('image/')){
-      document.getElementById('media-preview').src=_mediaData;
-      document.getElementById('media-preview').style.display='block';
-    } else if(file.type.startsWith('audio/')){
-      document.getElementById('audio-preview').src=_mediaData;
-      document.getElementById('audio-preview').style.display='block';
-    }
-    document.getElementById('media-name').innerText=file.name;
-  };
-  reader.readAsDataURL(file);
-};
-
-// Lightbox
-window.openLB=function(type,src){
-  var lb=document.getElementById('lightbox');
-  document.getElementById('lb-img').style.display='none';
-  document.getElementById('lb-vid').style.display='none';
-  document.getElementById('lb-aud').style.display='none';
-  if(type==='img'){document.getElementById('lb-img').src=src;document.getElementById('lb-img').style.display='block';}
-  else if(type==='vid'){document.getElementById('lb-vid').src=src;document.getElementById('lb-vid').style.display='block';}
-  else if(type==='aud'){document.getElementById('lb-aud').src=src;document.getElementById('lb-aud').style.display='block';}
-  lb.style.display='flex';
-};
-window.closeLB=function(){
-  document.getElementById('lightbox').style.display='none';
-  var v = document.getElementById('lb-vid'); if(v&&v.pause) v.pause();
-  var a = document.getElementById('lb-aud'); if(a&&a.pause) a.pause();
-};
-
-// Oylama Sistemi
-window.createPoll=function(){
-  var n=document.getElementById('p-name').value.trim();
-  var c=document.getElementById('p-cat').value.trim();
-  var e=document.getElementById('p-ext').value.trim();
-  if(!n||!c||!e){alert('Tüm alanları doldurun.');return;}
-  var polls=[];
-  try{ 
-      var raw = _s.getItem('a38t_polls');
-      if(raw) { polls=JSON.parse(raw); if(!Array.isArray(polls)) polls=[]; }
-  } catch(err){}
-  polls.push({id:Date.now(),name:n,cat:c,ext:e,yes:0,no:0,author:UID,voted:[]});
-  _s.setItem('a38t_polls',JSON.stringify(polls));
-  document.getElementById('p-name').value='';document.getElementById('p-cat').value='';document.getElementById('p-ext').value='';
-  loadPolls();
-};
-
-window.loadPolls=function(){
-  var polls=[];
-  try{ 
-      var raw = _s.getItem('a38t_polls');
-      if(raw) { polls=JSON.parse(raw); if(!Array.isArray(polls)) polls=[]; }
-  }catch(err){}
-  var pl=document.getElementById('poll-list');if(!pl) return;
-  if(!polls.length){pl.innerHTML='<p style="color:#888;font-size:9pt">Oylama yok.</p>';return;}
-  pl.innerHTML=polls.map(function(p,i){
-    var tot=p.yes+p.no,pct=tot>0?Math.round(p.yes/tot*100):0;
-    var voted=p.voted&&p.voted.indexOf(UID)>=0;
-    return '<div class="poll-item"><b>'+esc(p.name)+'</b> <span style="font-size:8pt;color:#666">('+esc(p.cat)+') '+esc(p.ext)+'</span>'
-      +'<br><span style="font-size:8pt">Öneren: '+esc(p.author)+'</span>'
-      +'<div class="vote-bar" style="width:'+pct+'%"></div>'
-      +'<span style="font-size:8pt">Evet: '+p.yes+' | Hayır: '+p.no+' (%'+pct+')</span><br>'
-      +(voted?'<span style="font-size:8pt;color:#666">Oy kullandınız.</span>'
-        :'<button class="btn-green" style="font-size:8pt" onclick="vote('+i+',1)">EVET</button> <button class="btn-sm" onclick="vote('+i+',0)">HAYIR</button>')
-      +'</div>';
-  }).join('');
-};
-
-window.vote=function(i,v){
-  var polls=[];
-  try{ polls=JSON.parse(_s.getItem('a38t_polls')||'[]'); }catch(err){}
-  if(!polls[i]||polls[i].voted.indexOf(UID)>=0) return;
-  if(v) polls[i].yes++;else polls[i].no++;
-  polls[i].voted.push(UID);
-  _s.setItem('a38t_polls',JSON.stringify(polls));loadPolls();
-};
-
-if(_s.getItem(_k.entered)==='1') showPage('gen');
-})();
-</script>
-</body>
-</html>
+function render
