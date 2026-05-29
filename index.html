@@ -2,258 +2,33 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A38T - Anarchy38Time</title>
+<title>Bakım</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:#FFFFEE;color:#800000;font-family:"Trebuchet MS",monospace;font-size:10pt;display:flex;flex-direction:column;min-height:100vh}
-a{color:#0000EE;text-decoration:none}
-a:hover{text-decoration:underline}
-#top-bar{background:#800000;color:#FFFFEE;padding:4px 10px;font-size:9pt;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:4px}
-#wrapper{display:flex;flex-grow:1;padding-bottom:180px}
-#sidebar{width:210px;background:#F0E0D6;border-right:2px solid #800000;padding:10px;display:none;flex-shrink:0;overflow-y:auto;max-height:calc(100vh - 30px);position:sticky;top:0}
-#sidebar-title{font-weight:bold;border-bottom:2px solid #800000;padding-bottom:5px;margin-bottom:8px;font-size:11pt}
-.cat-label{font-size:8pt;color:#600000;font-weight:bold;margin:8px 0 2px;text-transform:uppercase;letter-spacing:1px}
-.nav-link{display:block;padding:2px 4px;border-bottom:1px dotted #c09080;font-size:9pt;cursor:pointer;color:#0000EE}
-.nav-link:hover{background:#e4c4b4}
-.nav-link .tag-media{font-size:7pt;color:#006600;margin-left:3px}
-#main-content{flex-grow:1;padding:10px;overflow-y:auto}
-.page{display:none}.active-page{display:block}
-.board-header{border-bottom:2px solid #800000;margin-bottom:10px;padding-bottom:6px;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap}
-.board-header h1{font-size:14pt}
-.board-header p{font-size:8pt;color:#600000}
-.board-header .media-badge{font-size:8pt;background:#006600;color:#fff;padding:1px 5px}
-.post-wrap{margin:5px 0;display:flex;gap:8px;align-items:flex-start;flex-wrap:wrap}
-.post-thumb{cursor:pointer;flex-shrink:0}
-.post-thumb img,.post-thumb video{max-width:150px;max-height:150px;border:1px solid #800000;display:block}
-.post-thumb .audio-icon{width:60px;height:60px;background:#F0E0D6;border:1px solid #800000;display:flex;align-items:center;justify-content:center;font-size:24pt;cursor:pointer}
-.post{background:#F0E0D6;border:1px solid #800000;padding:6px 8px;display:inline-block;min-width:180px;max-width:700px;word-break:break-word}
-.post-header{font-size:8pt;margin-bottom:4px;color:#800000;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.post-header .uid{color:#117743;font-weight:bold}
-.post-header .postno{color:#800000;cursor:pointer;text-decoration:underline}
-.post-header .postno:hover{color:#d00000}
-.post-header .time{color:#666}
-.post-body{font-size:10pt;white-space:pre-wrap}
-.post-body .greentext{color:#789922}
-.post-body .quotelink{color:#d04000;text-decoration:underline;cursor:pointer;font-weight:bold}
-.admin-tag{background:#800000;color:#FFD700;font-size:7pt;padding:1px 4px}
-#bottom-panel{position:fixed;bottom:0;left:0;width:100%;background:#F0E0D6;border-top:2px solid #800000;padding:8px 12px;display:none;flex-direction:column;align-items:center;z-index:100}
-#info-bar{width:100%;background:#000;color:#00FF00;text-align:center;font-size:8pt;padding:2px;font-family:monospace;margin-bottom:5px}
-#post-form{width:100%;display:flex;gap:6px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
-#post-input{width:60%;height:50px;border:1px solid #800000;background:#FFFFEE;color:#800000;font-family:"Trebuchet MS",monospace;font-size:10pt;padding:4px;resize:vertical;min-width:200px}
-.form-side{display:flex;flex-direction:column;gap:4px}
-#media-input{display:none}
-#media-preview{max-width:80px;max-height:60px;margin-top:3px;display:none;border:1px solid #800000}
-#audio-preview{display:none;width:160px}
-.btn{background:#800000;color:#FFFFEE;border:none;padding:5px 10px;cursor:pointer;font-family:"Trebuchet MS",monospace;font-size:9pt}
-.btn:hover{background:#600000}
-.btn-sm{background:#555;color:#fff;border:none;padding:3px 7px;cursor:pointer;font-size:8pt;font-family:monospace}
-.btn-sm:hover{background:#333}
-.btn-green{background:#006600;color:#fff;border:none;padding:3px 7px;cursor:pointer;font-size:8pt;font-family:monospace}
-#uid-bar{font-size:8pt;color:#600;margin-top:2px;text-align:center}
-#welcome-page{text-align:center;padding:30px 15px}
-#welcome-page h1{font-size:22pt;border-bottom:2px solid #800000;display:inline-block;padding-bottom:5px;margin-bottom:12px}
-.enter-btn{background:#800000;color:#FFFFEE;border:2px solid #600000;padding:10px 28px;font-size:12pt;cursor:pointer;font-family:"Trebuchet MS",monospace;margin-top:15px}
-.enter-btn:hover{background:#600000}
-.rules-box{background:#F0E0D6;border:1px solid #800000;padding:10px;display:inline-block;margin-top:12px;font-size:9pt;text-align:left}
-.home-boards{display:flex;flex-wrap:wrap;gap:12px;margin-top:15px;justify-content:center;text-align:left}
-.home-cat{background:#F0E0D6;border:1px solid #800000;padding:8px 12px;min-width:180px}
-.home-cat h3{font-size:9pt;border-bottom:1px solid #800000;padding-bottom:3px;margin-bottom:5px;color:#800000}
-.home-cat a{display:block;font-size:9pt;padding:1px 0;color:#0000EE}
-.home-cat a:hover{text-decoration:underline}
-#lightbox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:9999;justify-content:center;align-items:center;flex-direction:column}
-#lightbox img,#lightbox video{max-width:90vw;max-height:85vh;border:2px solid #800000}
-#lightbox-close{position:absolute;top:10px;right:18px;color:#fff;font-size:22pt;cursor:pointer;font-family:monospace}
+body{
+background:#111;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+font-family:Arial;
+flex-direction:column;
+}
+.icon{
+font-size:80px;
+margin-bottom:20px;
+}
+.text{
+font-size:40px;
+}
 </style>
 </head>
 <body>
-
-<div id="top-bar">
-  <span>&#9632; A38T :: Anarchy38Time &#9632;</span>
-  <span>UID: <span id="top-uid" style="color:#FFD700"></span></span>
-</div>
-
-<div id="lightbox" onclick="closeLB()">
-  <span id="lightbox-close" onclick="closeLB()">&#10005;</span>
-  <img id="lb-img" src="" style="display:none" onclick="event.stopPropagation()">
-  <video id="lb-vid" controls style="display:none" onclick="event.stopPropagation()"></video>
-</div>
-
-<div id="wrapper">
-  <div id="sidebar">
-    <div id="sidebar-title">:: A38T ::</div>
-    <a class="nav-link" onclick="showPage('welcome')">&#8962; Ana Sayfa</a>
-    <div id="sidebar-nav"></div>
-  </div>
-  <div id="main-content">
-
-    <div id="welcome" class="page active-page">
-      <div id="welcome-page">
-        <h1>Anarchy38Time</h1>
-        <p>Anonim &bull; Sansürsüz &bull; Özgür</p>
-        <div class="rules-box">
-          <b>&#9632; Kurallar:</b>
-          <ol style="margin-left:15px;margin-top:5px">
-            <li>Kişisel bilgi paylaşma.</li>
-            <li>Spam ve flood yasaktır.</li>
-          </ol>
-        </div>
-        <br>
-        <button class="enter-btn" onclick="enterSite()">[ GİRİŞ YAP ]</button>
-        <br><br>
-        <div class="home-boards" id="home-board-list"></div>
-      </div>
-    </div>
-
-    <div id="dynamic-pages"></div>
-  </div>
-</div>
-
-<div id="bottom-panel" data-active-board="" data-media="0">
-  <div id="info-bar">Sistem Aktif</div>
-  <div id="post-form">
-    <textarea id="post-input" placeholder=">Mesajınızı yazın... (Alıntı için posta tıklayın)"></textarea>
-    <div class="form-side">
-      <button class="btn" onclick="sendPost()">[ GÖNDER ]</button>
-      <button class="btn-sm" id="media-btn" onclick="document.getElementById('media-input').click()" style="display:none">&#128247; Medya Ekle</button>
-      <input type="file" id="media-input" accept="image/*,video/mp4,audio/mp3,audio/mpeg,image/gif" onchange="previewMedia(this)">
-      <button class="btn-sm" onclick="clearPost()">Temizle</button>
-      <img id="media-preview" src="">
-      <span id="media-name" style="font-size:7pt;color:#800000;max-width:120px;word-break:break-all"></span>
-    </div>
-  </div>
-  <div id="uid-bar"></div>
-</div>
-
-<script>
-(function(){
-var _s=localStorage;
-var _k={uid:'a38t_uid',entered:'a38t_entered'};
-var _lastPostsData = {}; // Canlı yenilemede ekran titremesini önlemek için veri tutucu
-
-// UID
-if(!_s.getItem(_k.uid)) _s.setItem(_k.uid,'Anon'+(Math.floor(Math.random()*900)+100));
-var UID=_s.getItem(_k.uid);
-document.getElementById('top-uid').innerText=UID;
-document.getElementById('uid-bar').innerText='Sizin UID: '+UID;
-
-// KANALLAR
-var BOARDS={
-  "A38T Özel":[
-    {id:"gen",name:"Genel Sohbet",media:true},
-    {id:"oyun",name:"Oyunlar",media:true},
-    {id:"film",name:"Film & Dizi",media:true}
-  ],
-  "İlgi Alanları":[
-    {id:"muz",name:"Müzik",media:true},
-    {id:"oto",name:"Araba & Motor",media:true},
-    {id:"tek",name:"Teknoloji",media:true}
-  ]
-};
-
-var sidebarNav=document.getElementById('sidebar-nav');
-var dynPages=document.getElementById('dynamic-pages');
-var homeBoardList=document.getElementById('home-board-list');
-
-Object.keys(BOARDS).forEach(function(cat){
-  var catDiv=document.createElement('div');
-  catDiv.className='cat-label';
-  catDiv.innerText=cat;
-  sidebarNav.appendChild(catDiv);
-
-  var homeBlock='<div class="home-cat"><h3>'+cat+'</h3>';
-
-  BOARDS[cat].forEach(function(b){
-    var a=document.createElement('a');
-    a.className='nav-link';
-    a.href='#';
-    a.innerHTML='/'+b.id+'/ - '+b.name+(b.media?'<span class="tag-media">[M]</span>':'');
-    a.onclick=(function(bid){return function(e){e.preventDefault();showPage(bid)}})(b.id);
-    sidebarNav.appendChild(a);
-    homeBlock+='<a href="#" onclick="enterSite();showPage(\''+b.id+'\');return false">/'+b.id+'/ - '+b.name+'</a>';
-
-    var page=document.createElement('div');
-    page.id=b.id+'-page';
-    page.className='page';
-    page.innerHTML='<div class="board-header">'
-      +'<div><h1>/'+b.id+'/ - '+b.name+'</h1><p>'+cat+'</p></div>'
-      +'</div><div class="thread" id="thread-'+b.id+'"></div>';
-    dynPages.appendChild(page);
-  });
-  homeBlock+='</div>';
-  homeBoardList.innerHTML+=homeBlock;
-});
-
-var _mediaData=null;
-var _mediaType=null;
-
-window.enterSite=function(){
-  _s.setItem(_k.entered,'1');
-  showPage('gen');
-};
-
-window.showPage=function(bid){
-  if(_s.getItem(_k.entered)!=='1'){enterSite();return;}
-  document.querySelectorAll('.page').forEach(function(el){el.classList.remove('active-page')});
-  var target=document.getElementById(bid+'-page')||document.getElementById(bid);
-  if(target) target.classList.add('active-page');
-  
-  document.getElementById('sidebar').style.display='block';
-  document.getElementById('bottom-panel').style.display='flex';
-  document.getElementById('bottom-panel').setAttribute('data-active-board',bid);
-
-  var boardInfo=null;
-  Object.keys(BOARDS).forEach(function(cat){
-    BOARDS[cat].forEach(function(b){if(b.id===bid) boardInfo=b;});
-  });
-  
-  if(boardInfo) loadPosts(bid);
-  
-  var mediaAllowed=boardInfo&&boardInfo.media;
-  document.getElementById('bottom-panel').setAttribute('data-media',mediaAllowed?'1':'0');
-  document.getElementById('media-btn').style.display=mediaAllowed?'inline-block':'none';
-  clearPost();
-  
-  document.getElementById('info-bar').innerText=boardInfo?'Kanal: /'+bid+'/ - '+boardInfo.name:'Sistem Aktif.';
-};
-
-// POST YÜKLEME VE LİVE KONTROL
-window.loadPosts=function(bid){
-  var container=document.getElementById('thread-'+bid);
-  if(!container) return;
-  
-  var raw = _s.getItem('a38t_posts_'+bid) || '[]';
-  
-  // Eğer veri aynıysa boşuna sayfayı yenileyip titreşim yapma
-  if(_lastPostsData[bid] === raw && container.innerHTML !== '') return;
-  _lastPostsData[bid] = raw; 
-
-  var posts = [];
-  try {
-      posts = JSON.parse(raw);
-      if(!Array.isArray(posts)) posts = [];
-  } catch(e) { posts = []; }
-
-  if(!posts.length){
-      container.innerHTML='<p style="color:#888;font-size:9pt;padding:10px">Henüz mesaj yok. İlk mesajı sen gönder!</p>';
-      return;
-  }
-  container.innerHTML=posts.map(renderPost).join('');
-};
-
-// CANLI CHAT (LIVE) İÇİN OTOMATİK YENİLEME
-setInterval(function(){
-  var activeBid = document.getElementById('bottom-panel').getAttribute('data-active-board');
-  if(activeBid && activeBid !== 'welcome' && activeBid !== 'oy') {
-      loadPosts(activeBid);
-  }
-}, 3000); // 3 Saniyede bir kontrol eder (Live Chat Simülasyonu)
-
-// YANITLAMA (REPLY) FONKSİYONU
-window.quotePost=function(postNo){
-  var input = document.getElementById('post-input');
-  input.value += '>>' + postNo + '\n';
-  input.focus();
-};
-
-function render
+<div class="icon"> ____    _    _  _____ __  __ 
+| __ )  / \  | |/ /_ _|  \/  |
+|  _ \ / _ \ | ' / | || |\/| |
+| |_) / ___ \| . \ | || |  | |
+|____/_/   \_\_|\_\___|_|  |_|</div>
+<div class="text">Bakımdayız bir zaman süre sonra açıcağız sizin nasıl bakıma ihtiyacınız varsa bu prensesinde ihtiyacı var</div>
+</body>
+</html>
