@@ -2,33 +2,304 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>Bakım</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>38Time Board</title>
+
 <style>
+:root{
+--bg:#f5f0e6;
+--border:#cfc7b8;
+}
+
+*{
+font-family:Tahoma;
+box-sizing:border-box;
+}
+
 body{
-background:#111;
-color:white;
+margin:0;
+background:var(--bg);
 display:flex;
-justify-content:center;
-align-items:center;
 height:100vh;
-font-family:Arial;
+overflow:hidden;
+}
+
+/* SIDEBAR */
+#sidebar{
+width:300px;
+background:#fff;
+border-right:1px solid var(--border);
+display:flex;
 flex-direction:column;
 }
-.icon{
-font-size:80px;
-margin-bottom:20px;
+
+#channels{
+flex:1;
+overflow:auto;
+padding:10px;
 }
-.text{
-font-size:40px;
+
+.section{
+font-weight:bold;
+margin-top:10px;
+padding:4px;
+border-bottom:1px solid #ddd;
+}
+
+.channel{
+padding:6px;
+border:1px solid #ddd;
+margin:3px 0;
+cursor:pointer;
+background:#fafafa;
+}
+
+.channel.active{
+background:#ffefcc;
+}
+
+/* LOGIN */
+#login{
+border-top:1px solid #ccc;
+padding:10px;
+background:#fff;
+}
+
+#login input{
+width:100%;
+margin:3px 0;
+}
+
+/* MAIN */
+#main{
+flex:1;
+display:flex;
+flex-direction:column;
+}
+
+#topbar{
+padding:6px;
+background:#fff;
+border-bottom:1px solid #ddd;
+}
+
+#posts{
+flex:1;
+overflow:auto;
+padding:10px;
+}
+
+.post{
+background:#fff;
+border:1px solid #ddd;
+padding:8px;
+margin-bottom:8px;
+}
+
+#input{
+display:flex;
+gap:6px;
+padding:10px;
+background:#fff;
+border-top:1px solid #ddd;
+}
+
+textarea{
+flex:1;
+height:60px;
+}
+
+img,video{
+max-width:220px;
+margin-top:5px;
+}
+
+/* +18 */
+#adultScreen{
+position:fixed;
+inset:0;
+background:#000;
+color:#fff;
+display:none;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+z-index:9999;
+}
+
+#rgb{
+position:fixed;
+bottom:0;
+width:100%;
+text-align:center;
+background:linear-gradient(90deg,#000,#300,#000);
+color:#fff;
+padding:4px;
 }
 </style>
 </head>
+
 <body>
-<div class="text"> ____    _    _  _____ __  __ 
-| __ )  / \  | |/ /_ _|  \/  |
-|  _ \ / _ \ | ' / | || |\/| |
-| |_) / ___ \| . \ | || |  | |
-|____/_/   \_\_|\_\___|_|  |_|</div>
-<div class="text">Bakımdayız bir zaman süre sonra açıcağız sizin nasıl bakıma ihtiyacınız varsa bu prensesinde ihtiyacı var</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar">
+
+<div id="channels">
+
+<h3>38TIME KANALLAR</h3>
+
+<div class="section">SOHBET</div>
+<div class="channel active" onclick="set('/gen/',this)">/gen/ Genel sohbet</div>
+<div class="channel" onclick="set('/tech/',this)">/tech/ Teknoloji & yazılım</div>
+<div class="channel" onclick="set('/code/',this)">/code/ Kodlama & projeler</div>
+<div class="channel" onclick="set('/ai/',this)">/ai/ Yapay zeka</div>
+
+<div class="section">GÜVENLİK</div>
+<div class="channel" onclick="set('/cyber/',this)">/cyber/ Siber güvenlik</div>
+<div class="channel" onclick="set('/news/',this)">/news/ Haberler</div>
+
+<div class="section">MEDYA</div>
+<div class="channel" onclick="set('/media/',this)">/media/ Film, dizi, video</div>
+<div class="channel" onclick="set('/music/',this)">/music/ Müzik</div>
+<div class="channel" onclick="set('/game/',this)">/game/ Oyunlar</div>
+<div class="channel" onclick="set('/anime/',this)">/anime/ Anime & manga</div>
+
+<div class="section">SANAT</div>
+<div class="channel" onclick="set('/art/',this)">/art/ Çizim</div>
+<div class="channel" onclick="set('/photo/',this)">/photo/ Fotoğrafçılık</div>
+
+<div class="section">TOPLULUK</div>
+<div class="channel" onclick="set('/meme/',this)">/meme/ Meme</div>
+<div class="channel" onclick="set('/random/',this)">/random/ Rastgele</div>
+<div class="channel" onclick="set('/dark/',this)">/dark/ ARG</div>
+<div class="channel" onclick="set('/market/',this)">/market/ Dijital ürün</div>
+<div class="channel" onclick="set('/help/',this)">/help/ Yardım</div>
+<div class="channel" onclick="set('/archive/',this)">/archive/ Arşiv</div>
+
+<div class="section">⚠ +18</div>
+<div class="channel" onclick="adult('/gore/',this)">/gore/</div>
+<div class="channel" onclick="adult('/rule34/',this)">/rule34/</div>
+
+</div>
+
+<!-- LOGIN -->
+<div id="login">
+<input id="nick" placeholder="Nick (opsiyonel)">
+<input id="pass" type="password" placeholder="Şifre (opsiyonel)">
+<button onclick="login()">Giriş</button>
+<div id="status">Anon mod</div>
+</div>
+
+</div>
+
+<!-- MAIN -->
+<div id="main">
+
+<div id="topbar">KANAL: /gen/</div>
+<div id="posts"></div>
+
+<div id="input">
+<textarea id="msg"></textarea>
+<button onclick="send()">Gönder</button>
+</div>
+
+</div>
+
+<div id="rgb">38TIME • IMAGEBOARD CORE</div>
+
+<!-- +18 SCREEN -->
+<div id="adultScreen">
+<h1>18+ UYARI</h1>
+<p>Devam etmek istiyor musun?</p>
+<button onclick="enterAdult()">GİR</button>
+</div>
+
+<script>
+
+let channel="/gen/";
+let db=JSON.parse(localStorage.getItem("db")||"{}");
+let user="Anon";
+let adultOk=false;
+
+/* LOGIN (OPSİYONEL) */
+function login(){
+let n=nick.value;
+if(n) user=n;
+status.innerText="User: "+user;
+}
+
+/* KANAL SEÇ */
+function set(ch,el){
+channel=ch;
+document.querySelectorAll(".channel").forEach(c=>c.classList.remove("active"));
+el.classList.add("active");
+topbar.innerText="KANAL: "+ch;
+render();
+}
+
+/* +18 */
+function adult(ch,el){
+if(!adultOk){
+document.getElementById("adultScreen").style.display="flex";
+channel=ch;
+return;
+}
+set(ch,el);
+}
+
+function enterAdult(){
+adultOk=true;
+document.getElementById("adultScreen").style.display="none";
+set(channel,document.querySelector(".channel"));
+}
+
+/* SEND MEDIA */
+function send(){
+
+let input=document.createElement("input");
+input.type="file";
+input.accept="image/*,video/*,image/gif";
+
+input.onchange=()=>{
+
+let f=input.files[0];
+let url=URL.createObjectURL(f);
+
+if(!db[channel]) db[channel]=[];
+
+db[channel].push({
+u:user,
+t:msg.value,
+file:url,
+type:f.type.startsWith("video")?"video":"img"
+});
+
+localStorage.setItem("db",JSON.stringify(db));
+render();
+msg.value="";
+};
+
+input.click();
+}
+
+/* RENDER */
+function render(){
+if(!db[channel]) db[channel]=[];
+
+posts.innerHTML=db[channel].map(p=>`
+<div class="post">
+<b>${p.u}</b><br>
+${p.t||""}<br>
+${p.file? (p.type=="video"
+? `<video controls src="${p.file}"></video>`
+: `<img src="${p.file}">`) : ""}
+</div>
+`).join("");
+}
+
+render();
+
+</script>
+
 </body>
 </html>
